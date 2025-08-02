@@ -1,5 +1,5 @@
-# ChatGPT Micro-Cap Experiment
-Welcome to the repo behind my 6-month live trading experiment where ChatGPT manages a real-money micro-cap portfolio.
+# ChatGPT Crypto Experiment
+Welcome to the repo behind my 6-month live trading experiment where ChatGPT manages a real-money cryptocurrency portfolio.
 
 # The Concept
 Everyday, I kept seeing the same ad about having an some A.I. pick undervalued stocks. It was obvious it was trying to get me to subscribe to some garbage, so I just rolled my eyes. 
@@ -11,7 +11,7 @@ So, starting with just $100, I wanted to answer a simple but powerful question:
 
 ## Each trading day:
 
-- I provide it trading data on the stocks in it's portfolio.
+- I provide it trading data on the crypto assets in it's portfolio.
 
 - Strict stop-loss rules apply.
 
@@ -39,7 +39,7 @@ So, starting with just $100, I wanted to answer a simple but powerful question:
 ![Week 4 Performance](%286-30%20-%207-25%29%20Results.png)
 
 ---
-- Currently stomping on the Russell 2K.
+- Currently compared against Bitcoin.
 
 # Features of This Repo
 Live trading scripts — Used to evaluate prices and update holdings daily
