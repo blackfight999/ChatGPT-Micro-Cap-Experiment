@@ -90,7 +90,7 @@ def process_portfolio(portfolio: pd.DataFrame, starting_cash: float) -> pd.DataF
         df = pd.concat([existing, df], ignore_index=True)
 
     df.to_csv(file, index=False)
-    return chatgpt_portfolio
+    return portfolio
 
 # === Trade Logger (purely for stoplosses)===
 def log_sell(ticker: str, shares: float, price:float, cost:float, pnl:float, portfolio:pd.DataFrame) -> pd.DataFrame:
@@ -112,7 +112,7 @@ def log_sell(ticker: str, shares: float, price:float, cost:float, pnl:float, por
     else:
         df = pd.DataFrame([log])
     df.to_csv(file, index=False)
-    return chatgpt_portfolio
+    return portfolio
 
 # === Manual Buy Logger ===
 
