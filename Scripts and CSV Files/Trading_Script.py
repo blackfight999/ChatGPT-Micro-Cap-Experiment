@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 import os
 import numpy as np
- 
+
 today = datetime.today().strftime('%Y-%m-%d')
 # === update logs for portfolio ===
 def process_portfolio(portfolio: pd.DataFrame, starting_cash: float) -> pd.DataFrame:
@@ -11,11 +11,11 @@ def process_portfolio(portfolio: pd.DataFrame, starting_cash: float) -> pd.DataF
     total_value = 0
     total_pnl = 0
     cash = starting_cash
-    for _, stock in portfolio.iterrows():
-        ticker = stock["ticker"]
-        shares = int(stock["shares"])
-        cost = stock["buy_price"]
-        stop = stock["stop_loss"]
+    for _, asset in portfolio.iterrows():
+        ticker = asset["ticker"]
+        shares = float(asset["shares"])
+        cost = asset["buy_price"]
+        stop = asset["stop_loss"]
         data = yf.Ticker(ticker).history(period="1d")
 
         if data.empty:
@@ -169,7 +169,7 @@ If this is a mistake, enter 1. """)
         raise KeyError(f"error, could not find {ticker} in portfolio")
     ticker_row = chatgpt_portfolio[chatgpt_portfolio['ticker'] == ticker]
 
-    total_shares = int(ticker_row['shares'].item())
+    total_shares = float(ticker_row['shares'].item())
     print(total_shares)
     if shares_sold > total_shares:
         raise ValueError(f"You are trying to sell {shares_sold} but only own {total_shares}.")
@@ -210,15 +210,15 @@ If this is a mistake, enter 1. """)
 
 # This is where chatGPT gets daily updates from
 # I give it data on its portfolio and also other tickers if requested
-# Right now it additionally wants "^RUT", "IWO", and "XBI"
+# Right now it additionally wants "BTC-USD" and "ETH-USD"
 
 def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
 
     if isinstance(chatgpt_portfolio, pd.DataFrame):
             chatgpt_portfolio = chatgpt_portfolio.to_dict(orient="records")
     print(f"prices and updates for {today}")
-    for stock in chatgpt_portfolio + [{"ticker": "^RUT"}] + [{"ticker": "IWO"}] + [{"ticker": "XBI"}]:
-        ticker = stock['ticker']
+    for asset in chatgpt_portfolio + [{"ticker": "BTC-USD"}, {"ticker": "ETH-USD"}]:
+        ticker = asset['ticker']
         try:
             data = yf.download(ticker, period="2d", progress=False)
             if data.empty or len(data) < 2:
@@ -270,32 +270,31 @@ def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
     print(f"Total Sharpe Ratio over {n_days} days: {sharpe_total:.4f}")
     print(f"Total Sortino Ratio over {n_days} days: {sortino_total:.4f}")
     print(f"Latest ChatGPT Equity: ${final_equity:.2f}")
-# Get S&P 500 data
-    spx = yf.download("^SPX", start="2025-06-27", end=final_date + pd.Timedelta(days=1), progress=False)
-    spx = spx.reset_index()
+# Get Bitcoin data
+    btc = yf.download("BTC-USD", start="2025-06-27", end=final_date + pd.Timedelta(days=1), progress=False)
+    btc = btc.reset_index()
 
 
 # Normalize to $100
-    initial_price = spx["Close"].iloc[0].item()
-    price_now = spx["Close"].iloc[-1].item()
+    initial_price = btc["Close"].iloc[0].item()
+    price_now = btc["Close"].iloc[-1].item()
     scaling_factor = 100 / initial_price
-    spx_value = price_now * scaling_factor
-    print(f"$100 Invested in the S&P 500: ${spx_value:.2f}")
+    btc_value = price_now * scaling_factor
+    print(f"$100 Invested in Bitcoin: ${btc_value:.2f}")
     print(f"today's portfolio: {chatgpt_portfolio}")
     print(f"cash balance: {cash}")
 
     print("""Here are is your update for today. You can make any changes you see fit (if necessary),
 but you may not use deep research. You do have to ask premissons for any changes, as you have full control.
 You can however use the Internet and check current prices for potenial buys.""")
-
 # === Run Portfolio ===
 
-chatgpt_portfolio = [{'ticker': 'ABEO', 'shares': 6, 'stop_loss': 4.9, 'buy_price': 5.77, 'cost_basis': 34.62},
-                    {'ticker': 'IINN', 'shares': 14, 'stop_loss': 1.1, 'buy_price': 1.5, 'cost_basis': 21.0}, 
-                    {'ticker': 'ACTU', 'shares': 6, 'stop_loss': 4.89, 'buy_price': 5.75, 'cost_basis': 34.5},
+chatgpt_portfolio = [
+                    {'ticker': 'BTC-USD', 'shares': 0.002, 'stop_loss': 25000, 'buy_price': 30000, 'cost_basis': 60.0},
+                    {'ticker': 'ETH-USD', 'shares': 0.03, 'stop_loss': 1400, 'buy_price': 2000, 'cost_basis': 60.0},
                     ]
 chatgpt_portfolio = pd.DataFrame(chatgpt_portfolio)
-cash = 22.32
+cash = 20.0
 
 # See Using Scripts.md file for details
 
