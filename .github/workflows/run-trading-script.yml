@@ -24,3 +24,11 @@ jobs:
 
       - name: Run trading script
         run: python "Scripts and CSV Files/Trading_Script.py"
+
+      - name: Upload output logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: trading-script-outputs
+          path: |
+            Scripts and CSV Files/chatgpt_portfolio_update.csv
+            Scripts and CSV Files/chatgpt_trade_log.csv
